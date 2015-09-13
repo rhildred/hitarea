@@ -1,0 +1,74 @@
+<!Doctype html>
+<html>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body onload="preloadAssets();">
+        <canvas id="demoCanvas" width="500" height="500">
+            alternate content
+        </canvas>
+        <script src="https://code.createjs.com/createjs-2015.05.21.combined.js"></script>
+        <script>
+            var queue;
+
+            function preloadAssets() {
+                manifest = [
+                    {src:"images/project-starfish.png", id:"img_starfish"},
+                    {src:"images/project-starfishhitarea.png", id:"img_starfishhitarea"}
+                ];
+                // Start Preload
+                queue = new createjs.LoadQueue();
+                queue.on("complete", preloadCompleted);
+                queue.loadManifest(manifest);
+            }
+
+            function preloadCompleted() {
+                createUI();
+            }
+
+            function handleInteraction(event) {
+                event.target.alpha = (event.type == "mouseover") ? 1 : 0.5;
+            }
+
+            function createUI(){
+                var stage = new createjs.Stage("demoCanvas");
+                stage.enableMouseOver(10);
+                createjs.Ticker.addEventListener("tick", stage);
+                // Starfish without hit area
+                var starfishnohit = new createjs.Bitmap(queue.getResult("img_starfish"));
+                starfishnohit.x = 100;
+                starfishnohit.y = 40;
+                starfishnohit.scaleX = starfishnohit.scaleY = .1;
+                starfishnohit.alpha = 0.5;
+                stage.addChild(starfishnohit);
+                starfishnohit.on("mouseover", handleInteraction);
+                starfishnohit.on("mouseout", handleInteraction);
+                // Starfish with hit area
+                var starfishhit = new createjs.Bitmap(queue.getResult("img_starfish"));
+                starfishhit.x = 300;
+                starfishhit.y = 40;
+                starfishhit.scaleX = starfishhit.scaleY = .1;
+                starfishhit.alpha = 0.5;
+                stage.addChild(starfishhit);
+                stage.update()
+                starfishhit.hitArea = new createjs.Bitmap(queue.getResult("img_starfishhitarea"));;
+                starfishhit.on("mouseover", handleInteraction);
+                starfishhit.on("mouseout", handleInteraction);
+                // Bigger starfish with hit area
+                var starfishbigger = new createjs.Bitmap(queue.getResult("img_starfish"));
+                starfishbigger.x = 100;
+                starfishbigger.y = 140;
+                starfishbigger.scaleX = starfishbigger.scaleY = .15;
+                starfishbigger.alpha = 0.5;
+                stage.addChild(starfishbigger);
+                stage.update()
+                starfishbigger.hitArea = new createjs.Bitmap(queue.getResult("img_starfishhitarea"));;
+                starfishbigger.on("mouseover", handleInteraction);
+                starfishbigger.on("mouseout", handleInteraction);
+
+            }
+
+        </script>
+    </body>
+</html>
